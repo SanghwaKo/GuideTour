@@ -119,7 +119,6 @@ public class ReviewsListActivity extends Activity {
             }
         }else{
             // Filtered by traveler type
-            // By filtering... remove more reviews.. should refresh the list as it was
             String condition = mTravelerTypeTag[selectedFilter-5];
             while(iterator.hasNext()){
                 Review review = iterator.next();

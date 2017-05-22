@@ -12,6 +12,7 @@ import java.net.URL;
  */
 
 public class AddNewReview {
+    // Unfinished..
     private URL url;
     private JSONObject json;
 

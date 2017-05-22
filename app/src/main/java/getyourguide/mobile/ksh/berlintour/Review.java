@@ -178,7 +178,6 @@ public class Review implements Comparable {
             }catch (ParseException ex){
                 ex.printStackTrace();
             }*/
-            //Sorting by rating
         }
         return 0;
     }
