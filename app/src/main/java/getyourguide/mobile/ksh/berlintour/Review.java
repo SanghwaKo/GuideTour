@@ -181,9 +181,7 @@ public class Review implements Comparable {
             }*/
 
             //Sorting by rating
-
         }
-
         return 0;
     }
 }
