@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">BerlinTour</string>
+
+    <string name="reviews">Reviews</string>
+    <string name="stars">%%DD stars</string>
+    <string name="rating">%%DD out of 5 stars</string>
+    <string name="cnt_reviews">(%%DD)</string>
+
+    <string name="filtering">Filtering</string>
+    <string name="sorting">Sorting</string>
+    <string name="pre_page">Previous</string>
+    <string name="next_page">Next</string>
+    <string name="downloading_reviews">Downloading Reviews</string>
+    <string name="write_review">Writing new review</string>
+
+    <string name="write_title">Title</string>
+    <string name="hint_title">The title should be shorter than 40 letters</string>
+    <string name="write_user_name">User Name</string>
+    <string name="hint_user_name">The user name should be shorter than 20 letters</string>
+    <string name="write_traveler_type">Select Traveler Type</string>
+    <string name="write_user_country">Select Country</string>
+    <string name="write_rating">Rating</string>
+    <string name="hint_msg">Please write a message</string>
+    <string name="write_submit">Submit</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="warning_fill_form">Please fill out all fields</string>
+    <string name="succ_saved">Thanks for your review</string>
+    <string name="warning_offline">Please download all reviews in order to you can see them offline</string>
+    <string name="loading">Loading... Please wait</string>
+    <string name="page">%%DD Page of %%TT Pages</string>
+
+    <string-array name="sorting_by">
+        <item>By date</item>
+        <item>By Rating</item>
+    </string-array>
+
+    <string-array name="filtering_by">
+        <item>Less than 1 year</item>
+        <item>Less than 1 month</item>
+        <item>Satisfied (rating >= 4)</item>
+        <item>Good (4 >= rating >=2.5)</item>
+        <item>Not recommendable (2.5 >= rating)</item>
+        <item>Traveled alone</item>
+        <item>Young family</item>
+        <item>Elder family</item>
+        <item>Friends</item>
+        <item>Couple</item>
+    </string-array>
+
+    <string-array name="traveler_type">
+        <item>Alone</item>
+        <item>Young Family</item>
+        <item>Elder Family</item>
+        <item>Friends</item>
+        <item>Couple</item>
+    </string-array>
+</resources>
