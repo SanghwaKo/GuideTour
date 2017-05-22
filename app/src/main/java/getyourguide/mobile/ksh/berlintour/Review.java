@@ -100,7 +100,6 @@ public class Review implements Comparable {
 
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
-        this.languageCode = languageCode;
         setIsForeignLanguage();
     }
 

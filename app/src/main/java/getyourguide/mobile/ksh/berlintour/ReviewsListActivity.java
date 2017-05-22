@@ -36,15 +36,14 @@ public class ReviewsListActivity extends Activity {
     // total reviews info
     private boolean mStatus = false;
     private int mTotalReviews;
-
-    private ReviewsListAdapter mReviewsListAdapter;
-    private ListView mReviewsListView;
-
     private int mCount = 60;
     private int mPage = 0;
     private int mTotalPage = 0;
 
     // UI Components
+    private ReviewsListAdapter mReviewsListAdapter;
+    private ListView mReviewsListView;
+
     private ImageView[] mTotalRatings = new ImageView[5];
     private TextView mTotalRatingText;
     private TextView mTotalReviewsCount;

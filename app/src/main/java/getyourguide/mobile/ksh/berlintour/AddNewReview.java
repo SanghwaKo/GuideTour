@@ -12,8 +12,8 @@ import java.net.URL;
  */
 
 public class AddNewReview {
-    URL url;
-    JSONObject json;
+    private URL url;
+    private JSONObject json;
 
     public AddNewReview(String url, JSONObject json){
         // Connect to the server and send json to be added
