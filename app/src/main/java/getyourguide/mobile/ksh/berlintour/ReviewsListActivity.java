@@ -36,7 +36,7 @@ public class ReviewsListActivity extends Activity {
     // total reviews info
     private boolean mStatus = false;
     private int mTotalReviews;
-    private int mCount = 60;
+    private final int mCount = 60;
     private int mPage = 0;
     private int mTotalPage = 0;
 
@@ -71,7 +71,7 @@ public class ReviewsListActivity extends Activity {
         TAG = getLocalClassName();
         mReviews = new ArrayList<>();
 
-        refreshUrl(this, true);
+        refreshUrl(this,true);
     }
 
     @Override
@@ -138,6 +138,7 @@ public class ReviewsListActivity extends Activity {
             }
         }
         mTotalReviews = mReviews.size();
+        mPage = 0;
         mReviewsListAdapter.notifyDataSetChanged();
         refreshUI();
     }
@@ -186,7 +187,7 @@ public class ReviewsListActivity extends Activity {
             case R.id.action_pre_page:
                 if(mPage >= 1){
                     mPage--;
-                    refreshUrl(ReviewsListActivity.this, true);
+                    refreshUrl(ReviewsListActivity.this, "count=" + mCount + "&page=" + mPage, true);
                 }
                 if(Debug.DEBUG){
                     Log.d(TAG, "currentPage : " + mPage);
@@ -196,7 +197,7 @@ public class ReviewsListActivity extends Activity {
             case R.id.action_next_page:
                 if(mPage < (mTotalPage-1)){
                     mPage++;
-                    refreshUrl(ReviewsListActivity.this, true);
+                    refreshUrl(ReviewsListActivity.this, "count=" + mCount + "&page=" + mPage, true);
                 }
                 if(Debug.DEBUG){
                     Log.d(TAG, "currentPage : " + mPage);
@@ -208,10 +209,12 @@ public class ReviewsListActivity extends Activity {
     }
 
     private void refreshUrl(Context context, boolean viewRefresh){
+        refreshUrl(context, "", viewRefresh);
+    }
+
+    private void refreshUrl(Context context, String addUrl, boolean viewRefresh){
         // viewRefresh == false :: getAllReviews again, but do not refresh the view
-        String url = "https://www.getyourguide.com/berlin-l17/tempelhof-2-hour-airport-history-tour-berlin-airlift-more-t23776/reviews.json?";
-        url = url + "count=" + mCount;
-        url = url + "&page=" + mPage;
+        String url = "https://www.getyourguide.com/berlin-l17/tempelhof-2-hour-airport-history-tour-berlin-airlift-more-t23776/reviews.json?" + addUrl;
 
         if(Debug.DEBUG){
             Log.d(TAG, "url to connect : " + url);
@@ -430,7 +433,6 @@ public class ReviewsListActivity extends Activity {
                         newReview.setReviewerCountry(reviewerCountry);
                     }
                     mReviews.add(newReview);
-
                 }
             }
         }catch (Exception ex){
