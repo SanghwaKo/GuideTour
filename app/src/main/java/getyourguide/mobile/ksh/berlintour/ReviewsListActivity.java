@@ -282,6 +282,10 @@ public class ReviewsListActivity extends Activity {
         mTotalPage = (int)(Math.ceil((double)mTotalReviews / mCount));
         mCurrentPage.setText(getString(R.string.page).replace("%%DD", "" + (1+mPage)).replace("%%TT", "" + mTotalPage));
 
+        for(int i=0; i<mTotalRatingsIds.length; i++){
+            mTotalRatings[i].setImageResource(R.drawable.zero_point);
+        }
+
         if(avgRatings >= 1f){
             mTotalRatings[0].setImageResource(R.drawable.one_point);
             if(avgRatings >= 2f){
