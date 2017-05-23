@@ -116,7 +116,7 @@ public class Review implements Comparable {
     }
 
     public String getReviewerCountry(){
-        return getReviewerCountry();
+        return reviewerCountry;
     }
 
     public String getReviewInformation(){
