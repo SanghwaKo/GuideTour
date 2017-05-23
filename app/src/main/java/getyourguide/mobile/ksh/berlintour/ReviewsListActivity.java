@@ -71,7 +71,7 @@ public class ReviewsListActivity extends Activity {
         TAG = getLocalClassName();
         mReviews = new ArrayList<>();
 
-        refreshUrl(this);
+        refreshUrl(this, true);
     }
 
     @Override
@@ -87,8 +87,6 @@ public class ReviewsListActivity extends Activity {
     }
 
     public void setReviewsListWithFiltering(int selectedFilter) {
-        refreshUrl(this);
-        // Refresh review list
         Iterator<Review> iterator = mReviews.iterator();
 
         if(selectedFilter == 0 || selectedFilter == 1){
@@ -134,26 +132,29 @@ public class ReviewsListActivity extends Activity {
             }
         }
         mReviewsListAdapter.notifyDataSetChanged();
+        refreshUI();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
             case R.id.action_downloading:
-
+                // download data so that the users can see reviews without internet
                 return true;
             case R.id.action_writing:
                 Intent writingIntent = new Intent(ReviewsListActivity.this, WritingReviewActivity.class);
                 startActivity(writingIntent);
                 return true;
             case R.id.action_filtering:
+                refreshUrl(ReviewsListActivity.this, false);
                 final AlertDialog.Builder filteringBuilder = new AlertDialog.Builder(ReviewsListActivity.this);
                 filteringBuilder.setTitle(R.string.filtering)
                         .setItems(R.array.filtering_by, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int sortingBy) {
+                            public void onClick(DialogInterface dialogInterface, int filteringBy) {
                                 // Changed how we sort the reviews
-                                setReviewsListWithFiltering(sortingBy);
+                                setReviewsListWithFiltering(filteringBy);
+                                dialogInterface.cancel();
                             }
                         }).create();
                 filteringBuilder.show();
@@ -165,7 +166,11 @@ public class ReviewsListActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int sortingBy) {
                                 // Changed how we sort the reviews
-                                //mReviewsListAdapter.notifyDataSetChanged();
+                                if(sortingBy == 2){
+                                    dialogInterface.cancel();
+                                    Collections.sort(mReviews);
+                                    mReviewsListAdapter.notifyDataSetChanged();
+                                }
                             }
                         }).create();
                 sortingBuilder.show();
@@ -173,7 +178,7 @@ public class ReviewsListActivity extends Activity {
             case R.id.action_pre_page:
                 if(mPage >= 1){
                     mPage--;
-                    refreshUrl(ReviewsListActivity.this);
+                    refreshUrl(ReviewsListActivity.this, true);
                 }
                 if(Debug.DEBUG){
                     Log.d(TAG, "currentPage : " + mPage);
@@ -183,7 +188,7 @@ public class ReviewsListActivity extends Activity {
             case R.id.action_next_page:
                 if(mPage < (mTotalPage-1)){
                     mPage++;
-                    refreshUrl(ReviewsListActivity.this);
+                    refreshUrl(ReviewsListActivity.this, true);
                 }
                 if(Debug.DEBUG){
                     Log.d(TAG, "currentPage : " + mPage);
@@ -194,7 +199,8 @@ public class ReviewsListActivity extends Activity {
         }
     }
 
-    private void refreshUrl(Context context){
+    private void refreshUrl(Context context, boolean viewRefresh){
+        // viewRefresh == false :: getAllReviews again, but do not refresh the view
         String url = "https://www.getyourguide.com/berlin-l17/tempelhof-2-hour-airport-history-tour-berlin-airlift-more-t23776/reviews.json?";
         url = url + "count=" + mCount;
         url = url + "&page=" + mPage;
@@ -205,15 +211,17 @@ public class ReviewsListActivity extends Activity {
         final GetData getData = new GetData(context, url);
         getData.execute();
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if(!getData.isRunning){
-                    mReviewsListAdapter.notifyDataSetChanged();
+        if(viewRefresh){
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if(!getData.isRunning){
+                        mReviewsListAdapter.notifyDataSetChanged();
+                    }
                 }
-            }
-        });
-        thread.start();
+            });
+            thread.start();
+        }
     }
 
     private class GetData extends AsyncTask<Void, Void, Void>{
@@ -246,57 +254,8 @@ public class ReviewsListActivity extends Activity {
             progressDialog = null;
 
             mReviewsListAdapter = new ReviewsListAdapter(ReviewsListActivity.this, mReviews);
-        //    Collections.sort(mReviews);
             mReviewsListView.setAdapter(mReviewsListAdapter);
-
-            float sum = 0.0f;
-            float avgRatings = 0.0f;
-            for(int i=0; i<mReviews.size(); i++){
-                sum += mReviews.get(i).getRating();
-            }
-            avgRatings = Math.round(sum / mReviews.size() * 100);
-            avgRatings /= 100;
-
-            mTotalReviewsCount.setText(getString(R.string.cnt_reviews).replace("%%DD", mTotalReviews + ""));
-            mTotalRatingText.setText(getString(R.string.rating).replace("%%DD", avgRatings + ""));
-            mTotalPage = (int)(Math.ceil((double)mTotalReviews / mCount));
-            mCurrentPage.setText(getString(R.string.page).replace("%%DD", "" + (1+mPage)).replace("%%TT", "" + mTotalPage));
-
-            if(avgRatings >= 1f){
-                mTotalRatings[0].setImageResource(R.drawable.one_point);
-                if(avgRatings >= 2f){
-                    mTotalRatings[1].setImageResource(R.drawable.one_point);
-                    if(avgRatings >= 3f){
-                        mTotalRatings[2].setImageResource(R.drawable.one_point);
-                        if(avgRatings >= 4f){
-                            mTotalRatings[3].setImageResource(R.drawable.one_point);
-                            if(avgRatings == 5f){
-                                mTotalRatings[4].setImageResource(R.drawable.one_point);
-                            }else{
-                                if(avgRatings >= 4.5){
-                                    mTotalRatings[4].setImageResource(R.drawable.half_point);
-                                }
-                            }
-                        }else{
-                            if(avgRatings >= 3.5f){
-                                mTotalRatings[3].setImageResource(R.drawable.half_point);
-                            }
-                        }
-                    }else{
-                        if(avgRatings >= 2.5f){
-                            mTotalRatings[2].setImageResource(R.drawable.half_point);
-                        }
-                    }
-                }else{
-                    if(avgRatings >= 1.5f){
-                        mTotalRatings[1].setImageResource(R.drawable.half_point);
-                    }
-                }
-            }else{
-                if(avgRatings >= 0.5f){
-                    mTotalRatings[0].setImageResource(R.drawable.half_point);
-                }
-            }
+            refreshUI();
         }
 
         @Override
@@ -306,6 +265,57 @@ public class ReviewsListActivity extends Activity {
             parsingResponse(mResponseFromUrl);
 
             return null;
+        }
+    }
+
+    private void refreshUI(){
+        float sum = 0.0f;
+        float avgRatings = 0.0f;
+        for(int i=0; i<mReviews.size(); i++){
+            sum += mReviews.get(i).getRating();
+        }
+        avgRatings = Math.round(sum / mReviews.size() * 100);
+        avgRatings /= 100;
+
+        mTotalReviewsCount.setText(getString(R.string.cnt_reviews).replace("%%DD", mTotalReviews + ""));
+        mTotalRatingText.setText(getString(R.string.rating).replace("%%DD", avgRatings + ""));
+        mTotalPage = (int)(Math.ceil((double)mTotalReviews / mCount));
+        mCurrentPage.setText(getString(R.string.page).replace("%%DD", "" + (1+mPage)).replace("%%TT", "" + mTotalPage));
+
+        if(avgRatings >= 1f){
+            mTotalRatings[0].setImageResource(R.drawable.one_point);
+            if(avgRatings >= 2f){
+                mTotalRatings[1].setImageResource(R.drawable.one_point);
+                if(avgRatings >= 3f){
+                    mTotalRatings[2].setImageResource(R.drawable.one_point);
+                    if(avgRatings >= 4f){
+                        mTotalRatings[3].setImageResource(R.drawable.one_point);
+                        if(avgRatings == 5f){
+                            mTotalRatings[4].setImageResource(R.drawable.one_point);
+                        }else{
+                            if(avgRatings >= 4.5){
+                                mTotalRatings[4].setImageResource(R.drawable.half_point);
+                            }
+                        }
+                    }else{
+                        if(avgRatings >= 3.5f){
+                            mTotalRatings[3].setImageResource(R.drawable.half_point);
+                        }
+                    }
+                }else{
+                    if(avgRatings >= 2.5f){
+                        mTotalRatings[2].setImageResource(R.drawable.half_point);
+                    }
+                }
+            }else{
+                if(avgRatings >= 1.5f){
+                    mTotalRatings[1].setImageResource(R.drawable.half_point);
+                }
+            }
+        }else{
+            if(avgRatings >= 0.5f){
+                mTotalRatings[0].setImageResource(R.drawable.half_point);
+            }
         }
     }
 
@@ -407,9 +417,6 @@ public class ReviewsListActivity extends Activity {
                         String reviewerCountry = dataObj.get(Constant.TAG_REVIEWER_COUN).toString();
                         newReview.setReviewerCountry(reviewerCountry);
                     }
-                    /*if(!mReviews.contains(newReview)){
-                        mReviews.add(newReview);
-                    }*/
                     mReviews.add(newReview);
 
                 }
