@@ -89,8 +89,8 @@ public class ReviewsListActivity extends Activity {
     public void setReviewsListWithFiltering(int selectedFilter) {
         Iterator<Review> iterator = mReviews.iterator();
 
+        mPage = 0;
         if(selectedFilter == 10){
-            mPage = 0;
             refreshUrl(ReviewsListActivity.this, true);
             return;
         }
@@ -138,7 +138,6 @@ public class ReviewsListActivity extends Activity {
             }
         }
         mTotalReviews = mReviews.size();
-        mPage = 0;
         mReviewsListAdapter.notifyDataSetChanged();
         refreshUI();
     }
@@ -214,6 +213,7 @@ public class ReviewsListActivity extends Activity {
 
     private void refreshUrl(Context context, String addUrl, boolean viewRefresh){
         // viewRefresh == false :: getAllReviews again, but do not refresh the view
+        // we can get only 100 objects at once.. -> Need more job.
         String url = "https://www.getyourguide.com/berlin-l17/tempelhof-2-hour-airport-history-tour-berlin-airlift-more-t23776/reviews.json?" + addUrl;
 
         if(Debug.DEBUG){
