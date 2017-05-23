@@ -89,6 +89,12 @@ public class ReviewsListActivity extends Activity {
     public void setReviewsListWithFiltering(int selectedFilter) {
         Iterator<Review> iterator = mReviews.iterator();
 
+        if(selectedFilter == 10){
+            mPage = 0;
+            refreshUrl(ReviewsListActivity.this, true);
+            return;
+        }
+
         if(selectedFilter == 0 || selectedFilter == 1){
             // Filtered by written date
 
@@ -131,6 +137,7 @@ public class ReviewsListActivity extends Activity {
                 Log.d(TAG, "After Filtering : " + mReviews.get(i).toString());
             }
         }
+        mTotalReviews = mReviews.size();
         mReviewsListAdapter.notifyDataSetChanged();
         refreshUI();
     }
@@ -160,6 +167,7 @@ public class ReviewsListActivity extends Activity {
                 filteringBuilder.show();
                 return true;
             case R.id.action_sorting:
+                // There is no change in the review-list. - no need to refresh the list
                 AlertDialog.Builder sortingBuilder = new AlertDialog.Builder(ReviewsListActivity.this);
                 sortingBuilder.setTitle(R.string.sorting)
                         .setItems(R.array.sorting_by, new DialogInterface.OnClickListener() {

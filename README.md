@@ -25,6 +25,4 @@ User-friendler UX (e.g. It would be much better when the user could select the c
 
 / More various sorting/filtering ways - by reviewers' country)
 
-Better UI (e.g. When the user set filters, there are fewer reviews. But the total page is still same.
-
-/ When there is no result, can show "no result")
+Better UI (e.g. When there is no result, can show "no result")
